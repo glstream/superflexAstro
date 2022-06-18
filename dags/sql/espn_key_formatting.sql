@@ -1,0 +1,1 @@
+UPDATE dynastr.espn_player_projections SET player_name =  replace(replace(replace(replace(replace(replace(replace(replace(replace(player_name,'.',''), ' Jr', ''), ' III',''),'Jeffery','Jeff'), 'Joshua','Josh'),'William','Will'), ' II', ''),'''',''),'Kenneth','Ken')
