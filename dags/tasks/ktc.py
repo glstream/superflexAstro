@@ -189,5 +189,8 @@ def surrogate_key_formatting(table_name:str):
     cursor = conn.cursor()
     print("Connection established")
 
-    cursor.execute(f"""UPDATE {table_name}
-                        SET player_name = replace(replace(replace(replace(replace(replace(replace(replace(player_name,'.',''), ' Jr', ''), ' III',''),'Jeffery','Jeff'), 'Joshua','Josh'),'William','Will'), ' II', ''),'''','')""")
+    cursor.execute(f"""UPDATE dynastr.ktc_player_ranks 
+                        SET player_name = replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(player_name,'.',''), ' Jr', ''), ' III',''),'Jeffery','Jeff'), 'Joshua','Josh'),'William','Will'), ' II', ''),'''',''),'Kenneth','Ken'),'Mitchell','Mitch'),'DWayne','Dee')
+                        """)
+    conn.commit()
+    cursor.close()

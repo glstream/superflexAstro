@@ -35,13 +35,11 @@ with DAG(
         cursor = conn.cursor()
         cursor.execute(f"""select count(*) from dynastr.{table_name};""")
         db_row_return = cursor.fetchall()
-        print(row_count[0][0])
-        print(row_count)
         print(f"select count(*) from dynastr.{table_name};")
         cursor.close()
         conn.close()
         row_count = db_row_return[0][0]
-        return True if row_count > 1 else False
+        return True if row_count > 5000 else False
 
     for table in dynasty_sf_config['tables']:
 
