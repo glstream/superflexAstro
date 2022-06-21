@@ -74,6 +74,14 @@ def fp_player_load(fp_players_json):
                 fp_player["rank_std"],
                 fp_player["pos_rank"],
                 fp_player["tier"],
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
                 enrty_time,
             ]
         )
@@ -95,24 +103,32 @@ def fp_player_load(fp_players_json):
                                                     cbs_player_id,
                                                     player_bye_week,
                                                     player_age,
-                                                    player_ecr_delta,
-                                                    rank_ecr,
-                                                    rank_min,
-                                                    rank_max,
-                                                    rank_ave,
-                                                    rank_std,
-                                                    pos_rank,
-                                                    tier,
+                                                    one_player_ecr_delta,
+                                                    one_rank_ecr,
+                                                    one_rank_min,
+                                                    one_rank_max,
+                                                    one_rank_ave,
+                                                    one_rank_std,
+                                                    one_pos_rank,
+                                                    one_tier,
+                                                    sf_player_ecr_delta
+                                                    sf_rank_ecr,
+                                                    sf_rank_min,
+                                                    sf_rank_max,
+                                                    sf_rank_ave,
+                                                    sf_rank_std,
+                                                    sf_pos_rank,
+                                                    sf_tier,
                                                     insert_date)
                     VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     ON CONFLICT (fp_player_id)
-                    DO UPDATE SET rank_ecr = EXCLUDED.rank_ecr
-                    , rank_min = EXCLUDED.rank_min
-                    , rank_max = EXCLUDED.rank_max
-                    , rank_ave = EXCLUDED.rank_ave
-                    , rank_std = EXCLUDED.rank_std
-                    , pos_rank = EXCLUDED.pos_rank
-                    , tier = EXCLUDED.tier;
+                    DO UPDATE SET one_rank_ecr = EXCLUDED.one_rank_ecr
+                    , one_rank_min = EXCLUDED.one_rank_min
+                    , one_rank_max = EXCLUDED.one_rank_max
+                    , one_rank_ave = EXCLUDED.one_rank_ave
+                    , one_rank_std = EXCLUDED.one_rank_std
+                    , one_pos_rank = EXCLUDED.one_pos_rank
+                    , one_tier = EXCLUDED.one_tier;
                     """,
         tuple(fp_players),
         page_size=1000,
