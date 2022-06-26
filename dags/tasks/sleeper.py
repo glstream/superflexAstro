@@ -49,10 +49,10 @@ def players_surrogate_key_clean(table:str):
 
     cursor = conn.cursor()
     print("Connection established")
-    cursor.execute(f""" UPDATE {table}
-        SET player_name = 
-        replace(replace(replace(replace(replace(replace(replace(replace(replace(player_name,'.',''), ' Jr', ''), ' III',''),'Jeffery','Jeff'), 'Joshua','Josh'),'William','Will'), ' II', ''),'''',''),'Kenneth','Ken')""" )
-    conn.commit()
+    cursor.execute(f"""UPDATE dynastr.players
+                    SET player_name = replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(player_name,'.',''), ' Jr', ''), ' III',''),'Jeff','Jeffery'), 'Josh','Joshua'),'Will','William'), ' II', ''),'''',''),'Ken','Kenneth'),'Mith','Mitchell'),'DWayne','Dee')
+                        """)
+    conn.commit() 
     cursor.close()
     conn.close()   
     return

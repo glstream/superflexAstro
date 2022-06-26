@@ -23,9 +23,9 @@ dynasty_sf_config = Variable.get(dag_owner, deserialize_json=True)
     catchup=False,
     tags=['requests', 'database'])
 
-def sleeper_players():
+def incr_players_load():
     sleeper_players = players_pull()
     sleeper_transform = players_transform(sleeper_players)
     players_surrogate_key_clean(sleeper_transform)
 
-sleeper_players = sleeper_players()
+incr_players_load = incr_players_load()

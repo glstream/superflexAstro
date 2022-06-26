@@ -27,7 +27,7 @@ def sf_fp_web_scraper():
     fourth_semicolin_num = [m.start() for m in re.finditer(r";", players_script)][3]
 
     players_array = players_script[start_substr_num:fourth_semicolin_num]
-    fp_players_json = json.loads(players_array)
+    sf_fp_players_json = json.loads(players_array)
 
     return sf_fp_players_json
 
@@ -103,15 +103,15 @@ def sf_fp_player_load(sf_fp_players_json):
                                                     cbs_player_id,
                                                     player_bye_week,
                                                     player_age,
-                                                    one_player_ecr_delta,
-                                                    one_rank_ecr,
-                                                    one_rank_min,
-                                                    one_rank_max,
-                                                    one_rank_ave,
-                                                    one_rank_std,
-                                                    one_pos_rank,
-                                                    one_tier,
-                                                    sf_player_ecr_delta
+                                                    one_qb_player_ecr_delta,
+                                                    one_qb_rank_ecr,
+                                                    one_qb_rank_min,
+                                                    one_qb_rank_max,
+                                                    one_qb_rank_ave,
+                                                    one_qb_rank_std,
+                                                    one_qb_pos_rank,
+                                                    one_qb_tier,
+                                                    sf_player_ecr_delta,
                                                     sf_rank_ecr,
                                                     sf_rank_min,
                                                     sf_rank_max,
@@ -120,7 +120,7 @@ def sf_fp_player_load(sf_fp_players_json):
                                                     sf_pos_rank,
                                                     sf_tier,
                                                     insert_date)
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     ON CONFLICT (fp_player_id)
                     DO UPDATE SET sf_rank_ecr = EXCLUDED.sf_rank_ecr
                     , sf_rank_min = EXCLUDED.sf_rank_min
@@ -149,7 +149,7 @@ def sf_surrogate_key_formatting(table_name: str):
 
     cursor.execute(
         f"""UPDATE {table_name} 
-                        SET player_name = replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(player_name,'.',''), ' Jr', ''), ' III',''),'Jeffery','Jeff'), 'Joshua','Josh'),'William','Will'), ' II', ''),'''',''),'Kenneth','Ken'),'Mitchell','Mitch'),'DWayne','Dee')
+                        SET player_name = replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(player_name,'.',''), ' Jr', ''), ' III',''),'Jeff','Jeffery'), 'Josh','Joshua'),'Will','William'), ' II', ''),'''',''),'Ken','Kenneth'),'Mitch','Mitchell'),'DWayne','Dee')
                         """
     )
     conn.commit()

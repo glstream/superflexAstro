@@ -103,15 +103,15 @@ def fp_player_load(fp_players_json):
                                                     cbs_player_id,
                                                     player_bye_week,
                                                     player_age,
-                                                    one_player_ecr_delta,
-                                                    one_rank_ecr,
-                                                    one_rank_min,
-                                                    one_rank_max,
-                                                    one_rank_ave,
-                                                    one_rank_std,
-                                                    one_pos_rank,
-                                                    one_tier,
-                                                    sf_player_ecr_delta
+                                                    one_qb_player_ecr_delta,
+                                                    one_qb_rank_ecr,
+                                                    one_qb_rank_min,
+                                                    one_qb_rank_max,
+                                                    one_qb_rank_ave,
+                                                    one_qb_rank_std,
+                                                    one_qb_pos_rank,
+                                                    one_qb_tier,
+                                                    sf_player_ecr_delta,
                                                     sf_rank_ecr,
                                                     sf_rank_min,
                                                     sf_rank_max,
@@ -120,15 +120,15 @@ def fp_player_load(fp_players_json):
                                                     sf_pos_rank,
                                                     sf_tier,
                                                     insert_date)
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     ON CONFLICT (fp_player_id)
-                    DO UPDATE SET one_rank_ecr = EXCLUDED.one_rank_ecr
-                    , one_rank_min = EXCLUDED.one_rank_min
-                    , one_rank_max = EXCLUDED.one_rank_max
-                    , one_rank_ave = EXCLUDED.one_rank_ave
-                    , one_rank_std = EXCLUDED.one_rank_std
-                    , one_pos_rank = EXCLUDED.one_pos_rank
-                    , one_tier = EXCLUDED.one_tier;
+                    DO UPDATE SET one_qb_rank_ecr = EXCLUDED.one_qb_rank_ecr
+                    , one_qb_rank_min = EXCLUDED.one_qb_rank_min
+                    , one_qb_rank_max = EXCLUDED.one_qb_rank_max
+                    , one_qb_rank_ave = EXCLUDED.one_qb_rank_ave
+                    , one_qb_rank_std = EXCLUDED.one_qb_rank_std
+                    , one_qb_pos_rank = EXCLUDED.one_qb_pos_rank
+                    , one_qb_tier = EXCLUDED.one_qb_tier;
                     """,
         tuple(fp_players),
         page_size=1000,
@@ -149,7 +149,7 @@ def surrogate_key_formatting(table_name: str):
 
     cursor.execute(
         f"""UPDATE {table_name} 
-                        SET player_name = replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(player_name,'.',''), ' Jr', ''), ' III',''),'Jeffery','Jeff'), 'Joshua','Josh'),'William','Will'), ' II', ''),'''',''),'Kenneth','Ken'),'Mitchell','Mitch'),'DWayne','Dee')
+                        SET player_name = replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(player_name,'.',''), ' Jr', ''), ' III',''),'Jeffery','Jeff'), 'Josh','Joshua'),'Will','William'), ' II', ''),'''',''),'Ken','Kenneth'),'Mitch','Mitchell'),'DWayne','Dee')
                         """
     )
     conn.commit()
