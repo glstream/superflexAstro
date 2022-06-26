@@ -153,7 +153,9 @@ with DAG(
         execute_batch(
             cursor,
             """INSERT INTO dynastr.espn_player_projections (
-            player_name,
+            player_first_name,
+            player_last_name,
+            player_full_name,
             espn_player_id,
             ppr_rank,
             ppr_auction_value,
@@ -171,7 +173,7 @@ with DAG(
             pass_ints,
             insert_date
         )
-        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
         ON CONFLICT (espn_player_id) DO UPDATE
         SET ppr_rank=excluded.ppr_rank,
         ppr_auction_value=excluded.ppr_auction_value,
