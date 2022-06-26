@@ -1,37 +1,60 @@
 from datetime import datetime, timedelta
 import requests, json, os
-from airflow.operators.python_operator import  PythonOperator
+from airflow.operators.python_operator import PythonOperator
 from airflow.providers.postgres.operators.postgres import PostgresOperator, PostgresHook
 from airflow import DAG
 from psycopg2.extras import execute_batch
 from datetime import datetime
 
-dag_owner = 'dynasty_superflex_db'
+dag_owner = "dynasty_superflex_db"
 
 with DAG(
-    'espn_pull',
+    "espn_pull",
     default_args={
-        'owner': dag_owner,
-        'depends_on_past': False,
-        'email': ['grayson.stream@gmail.com'],
-        'email_on_failure': False,
-        'email_on_retry': False,
-        'retries': 1,
-        'retry_delay': timedelta(minutes=5),
-        },
-    description='Pulling Data from ESPN API for Player Projections',
+        "owner": dag_owner,
+        "depends_on_past": False,
+        "email": ["grayson.stream@gmail.com"],
+        "email_on_failure": False,
+        "email_on_retry": False,
+        "retries": 1,
+        "retry_delay": timedelta(minutes=5),
+    },
+    description="Pulling Data from ESPN API for Player Projections",
     schedule_interval="@hourly",
     start_date=datetime(2022, 6, 8),
     catchup=False,
-    tags=['requests', 'api', 'database'],
-
+    tags=["requests", "api", "database"],
 ) as dag:
+
     def espn_projections_pull() -> None:
         filters = {
             "players": {
                 "filterStatsForExternalIds": {"value": [2021, 2022]},
                 "filterSlotIds": {
-                    "value": [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,23,24,]
+                    "value": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        12,
+                        13,
+                        14,
+                        15,
+                        16,
+                        17,
+                        18,
+                        19,
+                        23,
+                        24,
+                    ]
                 },
                 "filterStatsForSourceIds": {"value": [0, 1]},
                 "sortAppliedStatTotal": {
@@ -68,10 +91,9 @@ with DAG(
 
         with open(data_path, "w") as file:
             file.write(json.dumps(res["players"]))
-    
 
-        return 'API RUN COMPLETE'
-    
+        return "API RUN COMPLETE"
+
     def data_validation():
         top_dir = os.getcwd()
         data_path = os.path.join(top_dir, "espn_projections.txt")
@@ -80,10 +102,9 @@ with DAG(
             players = json.load(player_data)
         return True if len(players) > 0 else False
 
-    
     def projections_load():
 
-        pg_hook = PostgresHook(postgres_conn_id='postgres_default')
+        pg_hook = PostgresHook(postgres_conn_id="postgres_default")
         conn = pg_hook.get_conn()
 
         cursor = conn.cursor()
@@ -99,16 +120,20 @@ with DAG(
             players = json.load(player_data)
 
         enrty_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f%z")
-        print('ENTRY TIME',enrty_time)
+        print("ENTRY TIME", enrty_time)
 
         espn_players = []
         for player in players:
             espn_players.append(
                 [
+                    player["player"]["fullName"].split(" ")[0],
+                    player["player"]["fullName"].split(" ")[1],
                     player["player"]["fullName"],
                     player["id"],
                     player["player"]["draftRanksByRankType"]["PPR"].get("rank", -1),
-                    player["player"]["draftRanksByRankType"]["PPR"].get("auctionValue", -1),
+                    player["player"]["draftRanksByRankType"]["PPR"].get(
+                        "auctionValue", -1
+                    ),
                     round(player["player"]["stats"][-1].get("appliedTotal", 0)),
                     round(player["player"]["stats"][-1]["stats"].get("53", 0)),
                     round(player["player"]["stats"][-1]["stats"].get("42", 0)),
@@ -125,8 +150,9 @@ with DAG(
                 ]
             )
 
-
-        execute_batch(cursor, """INSERT INTO dynastr.espn_player_projections (
+        execute_batch(
+            cursor,
+            """INSERT INTO dynastr.espn_player_projections (
             player_name,
             espn_player_id,
             ppr_rank,
@@ -162,31 +188,34 @@ with DAG(
         pass_tds=excluded.pass_tds,
         pass_ints=excluded.pass_ints,
         insert_date=excluded.insert_date
-            """, tuple(espn_players), page_size=1000)   
+            """,
+            tuple(espn_players),
+            page_size=1000,
+        )
 
         conn.commit()
         cursor.close()
 
         print(f"{len(espn_players)} espn players to inserted or updated.")
 
-        return 'LOAD COMPLETE'
+        return "LOAD COMPLETE"
 
     api_pull = PythonOperator(
-    task_id='get_raw_projections',
-    provide_context=True,
-    python_callable=espn_projections_pull,
+        task_id="get_raw_projections",
+        provide_context=True,
+        python_callable=espn_projections_pull,
     )
 
     data_validation = PythonOperator(
-    task_id='projections_validation',
-    provide_context=True,
-    python_callable=data_validation,
+        task_id="projections_validation",
+        provide_context=True,
+        python_callable=data_validation,
     )
 
     projections_load = PythonOperator(
-    task_id='load_projections',
-    provide_context=True,
-    python_callable=projections_load,
+        task_id="load_projections",
+        provide_context=True,
+        python_callable=projections_load,
     )
 
     surrogate_key_formatting = PostgresOperator(
