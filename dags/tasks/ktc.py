@@ -1,9 +1,10 @@
 from airflow.decorators import task
-import json,requests, re
+import json, requests, re
 from psycopg2.extras import execute_batch
 from bs4 import BeautifulSoup
 from datetime import datetime
 from airflow.providers.postgres.operators.postgres import PostgresHook
+
 
 @task()
 def ktc_web_scraper():
@@ -32,87 +33,96 @@ def ktc_web_scraper():
 
     return ktc_players_json
 
+
 @task()
-def data_validation(ktc_players_json:dict):
+def data_validation(ktc_players_json: dict):
     return ktc_players_json if len(ktc_players_json) > 0 else False
+
+
 @task()
 def ktc_player_load(ktc_players_json):
 
-        pg_hook = PostgresHook(postgres_conn_id='postgres_default')
-        conn = pg_hook.get_conn()
+    pg_hook = PostgresHook(postgres_conn_id="postgres_default")
+    conn = pg_hook.get_conn()
 
-        cursor = conn.cursor()
-        print("Connection established")
+    cursor = conn.cursor()
+    print("Connection established")
 
-        enrty_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f%z")
-        
-        ktc_players = []
+    enrty_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f%z")
 
-        for ktc_player in ktc_players_json:
-            ktc_players.append(
-                [
-                    ktc_player["playerName"],
-                    ktc_player["playerID"],
-                    ktc_player["slug"],
-                    ktc_player["position"],
-                    ktc_player["positionID"],
-                    ktc_player["team"],
-                    ktc_player["rookie"],
-                    ktc_player["college"],
-                    ktc_player["age"],
-                    ktc_player["heightFeet"],
-                    ktc_player["heightInches"],
-                    ktc_player["weight"],
-                    ktc_player["seasonsExperience"],
-                    ktc_player["pickRound"],
-                    ktc_player["pickNum"],
-                    ktc_player["oneQBValues"]["value"],
-                    ktc_player["oneQBValues"]["startSitValue"],
-                    ktc_player["oneQBValues"]["rank"],
-                    ktc_player["oneQBValues"]["overallTrend"],
-                    ktc_player["oneQBValues"]["positionalTrend"],
-                    ktc_player["oneQBValues"]["positionalRank"],
-                    ktc_player["oneQBValues"]["rookieRank"],
-                    ktc_player["oneQBValues"]["rookiePositionalRank"],
-                    ktc_player["oneQBValues"]["kept"],
-                    ktc_player["oneQBValues"]["traded"],
-                    ktc_player["oneQBValues"]["cut"],
-                    ktc_player["oneQBValues"]["overallTier"],
-                    ktc_player["oneQBValues"]["positionalTier"],
-                    ktc_player["oneQBValues"]["rookieTier"],
-                    ktc_player["oneQBValues"]["rookiePositionalTier"],
-                    ktc_player["oneQBValues"]["startSitOverallRank"],
-                    ktc_player["oneQBValues"]["startSitPositionalRank"],
-                    ktc_player["oneQBValues"]["startSitOverallTier"],
-                    ktc_player["oneQBValues"]["startSitPositionalTier"],
-                    ktc_player["oneQBValues"]["startSitOneQBFlexTier"],
-                    ktc_player["oneQBValues"]["startSitSuperflexFlexTier"],
-                    ktc_player["superflexValues"]["value"],
-                    ktc_player["superflexValues"]["startSitValue"],
-                    ktc_player["superflexValues"]["rank"],
-                    ktc_player["superflexValues"]["overallTrend"],
-                    ktc_player["superflexValues"]["positionalTrend"],
-                    ktc_player["superflexValues"]["positionalRank"],
-                    ktc_player["superflexValues"]["rookieRank"],
-                    ktc_player["superflexValues"]["rookiePositionalRank"],
-                    ktc_player["superflexValues"]["kept"],
-                    ktc_player["superflexValues"]["traded"],
-                    ktc_player["superflexValues"]["cut"],
-                    ktc_player["superflexValues"]["overallTier"],
-                    ktc_player["superflexValues"]["positionalTier"],
-                    ktc_player["superflexValues"]["rookieTier"],
-                    ktc_player["superflexValues"]["rookiePositionalTier"],
-                    ktc_player["superflexValues"]["startSitOverallRank"],
-                    ktc_player["superflexValues"]["startSitPositionalRank"],
-                    ktc_player["superflexValues"]["startSitOverallTier"],
-                    ktc_player["superflexValues"]["startSitPositionalTier"],
-                    enrty_time,
-                ]
-            )
+    ktc_players = []
 
-        execute_batch(cursor, """
+    for ktc_player in ktc_players_json:
+        ktc_players.append(
+            [
+                ktc_player["playerName"].split(" ")[0],
+                ktc_player["playerName"].split(" ")[1],
+                ktc_player["playerName"],
+                ktc_player["playerID"],
+                ktc_player["slug"],
+                ktc_player["position"],
+                ktc_player["positionID"],
+                ktc_player["team"],
+                ktc_player["rookie"],
+                ktc_player["college"],
+                ktc_player["age"],
+                ktc_player["heightFeet"],
+                ktc_player["heightInches"],
+                ktc_player["weight"],
+                ktc_player["seasonsExperience"],
+                ktc_player["pickRound"],
+                ktc_player["pickNum"],
+                ktc_player["oneQBValues"]["value"],
+                ktc_player["oneQBValues"]["startSitValue"],
+                ktc_player["oneQBValues"]["rank"],
+                ktc_player["oneQBValues"]["overallTrend"],
+                ktc_player["oneQBValues"]["positionalTrend"],
+                ktc_player["oneQBValues"]["positionalRank"],
+                ktc_player["oneQBValues"]["rookieRank"],
+                ktc_player["oneQBValues"]["rookiePositionalRank"],
+                ktc_player["oneQBValues"]["kept"],
+                ktc_player["oneQBValues"]["traded"],
+                ktc_player["oneQBValues"]["cut"],
+                ktc_player["oneQBValues"]["overallTier"],
+                ktc_player["oneQBValues"]["positionalTier"],
+                ktc_player["oneQBValues"]["rookieTier"],
+                ktc_player["oneQBValues"]["rookiePositionalTier"],
+                ktc_player["oneQBValues"]["startSitOverallRank"],
+                ktc_player["oneQBValues"]["startSitPositionalRank"],
+                ktc_player["oneQBValues"]["startSitOverallTier"],
+                ktc_player["oneQBValues"]["startSitPositionalTier"],
+                ktc_player["oneQBValues"]["startSitOneQBFlexTier"],
+                ktc_player["oneQBValues"]["startSitSuperflexFlexTier"],
+                ktc_player["superflexValues"]["value"],
+                ktc_player["superflexValues"]["startSitValue"],
+                ktc_player["superflexValues"]["rank"],
+                ktc_player["superflexValues"]["overallTrend"],
+                ktc_player["superflexValues"]["positionalTrend"],
+                ktc_player["superflexValues"]["positionalRank"],
+                ktc_player["superflexValues"]["rookieRank"],
+                ktc_player["superflexValues"]["rookiePositionalRank"],
+                ktc_player["superflexValues"]["kept"],
+                ktc_player["superflexValues"]["traded"],
+                ktc_player["superflexValues"]["cut"],
+                ktc_player["superflexValues"]["overallTier"],
+                ktc_player["superflexValues"]["positionalTier"],
+                ktc_player["superflexValues"]["rookieTier"],
+                ktc_player["superflexValues"]["rookiePositionalTier"],
+                ktc_player["superflexValues"]["startSitOverallRank"],
+                ktc_player["superflexValues"]["startSitPositionalRank"],
+                ktc_player["superflexValues"]["startSitOverallTier"],
+                ktc_player["superflexValues"]["startSitPositionalTier"],
+                enrty_time,
+            ]
+        )
+
+    execute_batch(
+        cursor,
+        """
             INSERT INTO dynastr.ktc_player_ranks (
-                player_name,
+                player_first_name,
+                player_last_name,
+                player_full_name,
                 ktc_player_id,
                 slug,
                 position,
@@ -169,28 +179,33 @@ def ktc_player_load(ktc_players_json):
                 sf_start_sit_positional_tier,
                 insert_date
         )        
-        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
         ON CONFLICT (ktc_player_id)
         DO UPDATE SET sf_rank = EXCLUDED.sf_rank
             , one_qb_value = EXCLUDED.one_qb_value
             , sf_value = EXCLUDED.sf_value;
-        """, tuple(ktc_players), page_size=1000)  
+        """,
+        tuple(ktc_players),
+        page_size=1000,
+    )
 
-        print(f"{len(ktc_players)} ktc players to inserted or updated.")        
-        conn.commit()
-        cursor.close()
-        return 'dynastr.ktc_player_ranks'
-
-@task()
-def surrogate_key_formatting(table_name:str):
-    pg_hook = PostgresHook(postgres_conn_id='postgres_default')
-    conn = pg_hook.get_conn()
-
-    cursor = conn.cursor()
-    print("Connection established")
-
-    cursor.execute(f"""UPDATE dynastr.ktc_player_ranks 
-                        SET player_name = replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(player_name,'.',''), ' Jr', ''), ' III',''),'Jeffery','Jeff'), 'Josh','Joshua'),'Will','William'), ' II', ''),'''',''),'Ken','Kenneth'),'Mitch','Mitchell'),'DWayne','Dee')
-                        """)
+    print(f"{len(ktc_players)} ktc players to inserted or updated.")
     conn.commit()
     cursor.close()
+    return "dynastr.ktc_player_ranks"
+
+
+@task()
+def surrogate_key_formatting(table_name: str):
+    pg_hook = PostgresHook(postgres_conn_id="postgres_default")
+    conn = pg_hook.get_conn()
+    cursor = conn.cursor()
+    print("Connection established")
+    cursor.execute(
+        f"""UPDATE {table_name} 
+                        SET player_first_name = replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(player_name,'.',''), ' Jr', ''), ' III',''),'Jeffery','Jeff'), 'Joshua','Josh'),'William','Will'), ' II', ''),'''',''),'Ken','Kenneth'),'Mitch','Mitchell'),'DWayne','Dee')
+                        """
+    )
+    conn.commit()
+    cursor.close()
+    return
