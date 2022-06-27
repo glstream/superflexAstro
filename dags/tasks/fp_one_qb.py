@@ -51,6 +51,8 @@ def fp_player_load(fp_players_json):
     for fp_player in fp_players_json["players"]:
         fp_players.append(
             [
+                fp_player["player_name"].split(" ")[0],
+                fp_player["player_name"].split(" ")[1],
                 fp_player["player_name"],
                 fp_player["player_id"],
                 fp_player["player_team_id"],
@@ -88,7 +90,9 @@ def fp_player_load(fp_players_json):
     execute_batch(
         cursor,
         """INSERT INTO dynastr.fp_player_ranks (
-                                            player_name,
+                                                    player_first_name,
+                                                    player_last_name,
+                                                    player_full_name,
                                                     fp_player_id,
                                                     player_team_id,
                                                     player_position_id,
@@ -120,7 +124,7 @@ def fp_player_load(fp_players_json):
                                                     sf_pos_rank,
                                                     sf_tier,
                                                     insert_date)
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     ON CONFLICT (fp_player_id)
                     DO UPDATE SET one_qb_rank_ecr = EXCLUDED.one_qb_rank_ecr
                     , one_qb_rank_min = EXCLUDED.one_qb_rank_min
@@ -149,7 +153,7 @@ def surrogate_key_formatting(table_name: str):
 
     cursor.execute(
         f"""UPDATE {table_name} 
-                        SET player_name = replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(player_name,'.',''), ' Jr', ''), ' III',''),'Jeffery','Jeff'), 'Josh','Joshua'),'Will','William'), ' II', ''),'''',''),'Ken','Kenneth'),'Mitch','Mitchell'),'DWayne','Dee')
+                        SET player_first_name = replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(player_first_name,'.',''), ' Jr', ''), ' III',''),'Jeffery','Jeff'), 'Josh','Joshua'),'Will','William'), ' II', ''),'''',''),'Ken','Kenneth'),'Mitch','Mitchell'),'DWayne','Dee')
                         """
     )
     conn.commit()

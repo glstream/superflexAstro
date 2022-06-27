@@ -51,6 +51,8 @@ def sf_fp_player_load(sf_fp_players_json):
     for sf_fp_player in sf_fp_players_json["players"]:
         sf_fp_players.append(
             [
+                sf_fp_player["player_name"].split(" ")[0],
+                sf_fp_player["player_name"].split(" ")[1],
                 sf_fp_player["player_name"],
                 sf_fp_player["player_id"],
                 sf_fp_player["player_team_id"],
@@ -87,8 +89,10 @@ def sf_fp_player_load(sf_fp_players_json):
         )
     execute_batch(
         cursor,
-        """INSERT INTO dynastr.fp_player_ranks (
-                                            player_name,
+        """INSERT INTO dynastr.fp_player_ranks ( 
+                                                    player_first_name,
+                                                    player_last_name,
+                                                    player_full_name,
                                                     fp_player_id,
                                                     player_team_id,
                                                     player_position_id,
@@ -120,7 +124,7 @@ def sf_fp_player_load(sf_fp_players_json):
                                                     sf_pos_rank,
                                                     sf_tier,
                                                     insert_date)
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     ON CONFLICT (fp_player_id)
                     DO UPDATE SET sf_rank_ecr = EXCLUDED.sf_rank_ecr
                     , sf_rank_min = EXCLUDED.sf_rank_min
@@ -149,7 +153,7 @@ def sf_surrogate_key_formatting(table_name: str):
 
     cursor.execute(
         f"""UPDATE {table_name} 
-                        SET player_name = replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(player_name,'.',''), ' Jr', ''), ' III',''),'Jeff','Jeffery'), 'Josh','Joshua'),'Will','William'), ' II', ''),'''',''),'Ken','Kenneth'),'Mitch','Mitchell'),'DWayne','Dee')
+                        SET player_first_name = replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(player_first_name,'.',''), ' Jr', ''), ' III',''),'Jeffery','Jeff'), 'Joshua','Josh'),'William','Will'), ' II', ''),'''',''),'Kenneth','Ken'),'Mitchell','Mitch'),'DWayne','Dee')
                         """
     )
     conn.commit()
