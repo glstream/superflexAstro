@@ -24,8 +24,10 @@ def players_transform(players):
 
     trimmed_players_df = all_players_df[["player_id", "full_name", "position", "team"]]
     ap_list = trimmed_players_df.values.tolist()
-    [i.extend([i[1]]) for i in ap_list]
-    print(ap_list)
+    # ap_list = [i.extend([i[1]]) for i in ap_list]
+    ap_list_filtered = [i for i in ap_list if i[2] in ['QB', 'RB', 'WR', 'TE']]
+    ap_list = [[i[0],i[1].split(" ")[0], i[1].split(" ")[1], i[1], i[2], i[3]] for i in ap_list_filtered]
+    print(ap_list[0])
 
     pg_hook = PostgresHook(postgres_conn_id='postgres_default')
     conn = pg_hook.get_conn()
@@ -35,22 +37,22 @@ def players_transform(players):
     conn.commit()
 
     cursor = conn.cursor()
-    execute_batch(cursor, """INSERT into dynastr.players (player_id,full_name,player_position,team,player_name)
-    VALUES (%s, %s, %s, %s, %s)""", tuple(ap_list), page_size=1000)
+    execute_batch(cursor, """INSERT into dynastr.players (player_id, first_name, last_name, full_name, player_position, team)
+    VALUES (%s, %s, %s, %s, %s, %s)""", tuple(ap_list), page_size=1000)
     conn.commit()
     cursor.close()
     conn.close()
     return "dynastr.players"
 
 @task
-def players_surrogate_key_clean(table:str):
+def players_surrogate_key_clean(table_name:str):
     pg_hook = PostgresHook(postgres_conn_id='postgres_default')
     conn = pg_hook.get_conn()
 
     cursor = conn.cursor()
     print("Connection established")
-    cursor.execute(f"""UPDATE dynastr.players
-                    SET player_name = replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(player_name,'.',''), ' Jr', ''), ' III',''),'Jeff','Jeffery'), 'Josh','Joshua'),'Will','William'), ' II', ''),'''',''),'Ken','Kenneth'),'Mith','Mitchell'),'DWayne','Dee')
+    cursor.execute(f"""UPDATE {table_name}
+                    SET first_name = replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(first_name,'.',''), ' Jr', ''), ' III',''),'Jeffery','Jeff'), 'Joshua','Josh'),'William','Will'), ' II', ''),'''',''),'Kenneth','Ken'),'Mitchell','Mitch'),'DWayne','Dee')
                         """)
     conn.commit() 
     cursor.close()
