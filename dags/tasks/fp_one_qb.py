@@ -132,7 +132,8 @@ def fp_player_load(fp_players_json):
                     , one_qb_rank_ave = EXCLUDED.one_qb_rank_ave
                     , one_qb_rank_std = EXCLUDED.one_qb_rank_std
                     , one_qb_pos_rank = EXCLUDED.one_qb_pos_rank
-                    , one_qb_tier = EXCLUDED.one_qb_tier;
+                    , one_qb_tier = EXCLUDED.one_qb_tier
+                    , insert_date = EXCLUDED.insert_date;;
                     """,
         tuple(fp_players),
         page_size=1000,

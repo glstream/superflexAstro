@@ -132,7 +132,8 @@ def sf_fp_player_load(sf_fp_players_json):
                     , sf_rank_ave = EXCLUDED.sf_rank_ave
                     , sf_rank_std = EXCLUDED.sf_rank_std
                     , sf_pos_rank = EXCLUDED.sf_pos_rank
-                    , sf_tier = EXCLUDED.sf_tier;
+                    , sf_tier = EXCLUDED.sf_tier
+                    , insert_date = EXCLUDED.insert_date;
                     """,
         tuple(sf_fp_players),
         page_size=1000,
