@@ -183,7 +183,8 @@ def ktc_player_load(ktc_players_json):
         ON CONFLICT (ktc_player_id)
         DO UPDATE SET sf_rank = EXCLUDED.sf_rank
             , one_qb_value = EXCLUDED.one_qb_value
-            , sf_value = EXCLUDED.sf_value;
+            , sf_value = EXCLUDED.sf_value
+            , insert_date = EXCLUDED.insert_date;
         """,
         tuple(ktc_players),
         page_size=1000,
