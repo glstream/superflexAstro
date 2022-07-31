@@ -21,7 +21,7 @@ dag_owner = "grayson.stream"
         "retry_delay": timedelta(minutes=5),
     },
      description="Web Scrapper for Dynastry Process Values",
-     schedule_interval="0 14 * * *",
+     schedule_interval="30 * * * *",
      start_date=datetime(2022,7,29),
      catchup=False,
      tags=["scraper", "database"],
