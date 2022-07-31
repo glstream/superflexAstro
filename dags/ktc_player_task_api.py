@@ -1,7 +1,5 @@
 from datetime import datetime, timedelta
-from airflow.decorators import (
-    dag,
-)  # DAG and task decorators for interfacing with the TaskFlow API
+from airflow.decorators import dag
 from tasks.ktc import (
     ktc_web_scraper,
     data_validation,
