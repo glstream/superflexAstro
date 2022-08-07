@@ -26,7 +26,7 @@ def players_transform(players):
     ap_list = trimmed_players_df.values.tolist()
     # ap_list = [i.extend([i[1]]) for i in ap_list]
     ap_list_filtered = [i for i in ap_list if i[2] in ['QB', 'RB', 'WR', 'TE']]
-    ap_list = [[i[0],i[1].split(" ")[0], i[1].split(" ")[1], i[1], i[2], i[3]] for i in ap_list_filtered]
+    ap_list = [[i[0],i[1].split(" ")[0], i[1].split(" ")[-1], i[1], i[2], i[3]] for i in ap_list_filtered]
     print(ap_list[0])
 
     pg_hook = PostgresHook(postgres_conn_id='postgres_default')

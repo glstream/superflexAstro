@@ -24,7 +24,7 @@ def dp_web_scrapper():
     for row in reader:
         prepred_row = [f"{row[0]},{enrty_time}"]
         player_record = [
-            i.replace("'", "").replace('"', "").replace(' III', "").replace(' II', "").replace(' Jr.', "").replace(' V', "").split(",") for i in prepred_row
+            i.replace("'", "").replace('"', "").replace(' III', "").replace(' II', "").replace(' Jr.', "").split(",") for i in prepred_row
         ]
         dp_players.extend(player_record)
 

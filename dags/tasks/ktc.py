@@ -56,7 +56,7 @@ def ktc_player_load(ktc_players_json):
         ktc_players.append(
             [
                 ktc_player["playerName"].split(" ")[0],
-                ktc_player["playerName"].split(" ")[1],
+                ktc_player["playerName"].replace(' III', "").split(" ")[-1],
                 ktc_player["playerName"],
                 ktc_player["playerID"],
                 ktc_player["slug"],

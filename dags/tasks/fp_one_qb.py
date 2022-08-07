@@ -52,7 +52,7 @@ def fp_player_load(fp_players_json):
         fp_players.append(
             [
                 fp_player["player_name"].split(" ")[0],
-                fp_player["player_name"].split(" ")[1],
+                fp_player["player_name"].replace(' III', "").split(" ")[-1],
                 fp_player["player_name"],
                 fp_player["player_id"],
                 fp_player["player_team_id"],
@@ -154,7 +154,7 @@ def surrogate_key_formatting(table_name: str):
 
     cursor.execute(
         f"""UPDATE {table_name} 
-                        SET player_first_name = replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(player_first_name,'.',''), ' Jr', ''), ' III',''),'Jeffery','Jeff'), 'Joshua','Josh'),'Will','William'), ' II', ''),'''',''),'Ken','Kenneth'),'Mitch','Mitchell'),'DWayne','Dee')
+                        SET player_first_name = replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(player_first_name,'.',''), ' Jr', ''), ' III',''),'Jeffery','Jeff'), 'Joshua','Josh'),'William','Will'), ' II', ''),'''',''),'Kenneth','Ken'),'Mitchell','Mitch'),'DWayne','Dee')
                         """
     )
     conn.commit()

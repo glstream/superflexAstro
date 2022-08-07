@@ -52,7 +52,7 @@ def sf_fp_player_load(sf_fp_players_json):
         sf_fp_players.append(
             [
                 sf_fp_player["player_name"].split(" ")[0],
-                sf_fp_player["player_name"].split(" ")[1],
+                sf_fp_player["player_name"].replace(' III', "").split(" ")[-1],
                 sf_fp_player["player_name"],
                 sf_fp_player["player_id"],
                 sf_fp_player["player_team_id"],

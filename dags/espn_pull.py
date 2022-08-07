@@ -127,7 +127,7 @@ with DAG(
             espn_players.append(
                 [
                     player["player"]["fullName"].split(" ")[0],
-                    player["player"]["fullName"].split(" ")[1],
+                    player["player"]["fullName"].replace("'", "").replace('"', "").replace(' III', "").replace(' II', "").replace(' Jr.', "").split(" ")[-1],
                     player["player"]["fullName"],
                     player["id"],
                     player["player"]["draftRanksByRankType"]["PPR"].get("rank", -1),
