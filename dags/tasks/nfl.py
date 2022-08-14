@@ -34,23 +34,34 @@ def nfl_web_scrapper() -> list:
                 .replace(" Jr.", ""),
                 re.split("=", names[i].find("a")["href"])[-1],
                 names[i].find("a")["href"],
-                str(projections[i])[47:-5],
-                enrty_time,
+                str(projections[i])[47:-5]
             ]
             for i in range(len(names))
         ]
         nfl_projections_players.extend(players)
+    nfl_players_preped = [
+        [
+            i[0].split(" ")[0], #firstname
+            i[0].split(" ")[-1], #last_name
+            i[0], #fullname
+            i[1], #nfl_player_id
+            i[2], #slug
+            int(float(i[3])),
+            enrty_time
+        ]
+        for i in nfl_projections_players
+    ]    
 
-    return nfl_projections_players
+    return nfl_players_preped
 
 
 @task()
-def data_validation(nfl_projections_players: list):
-    return nfl_projections_players if len(nfl_projections_players) > 0 else False
+def data_validation(nfl_players_preped: list):
+    return nfl_players_preped if len(nfl_players_preped) > 0 else False
 
 
 @task()
-def nfl_player_load(nfl_projections_players: list):
+def nfl_player_load(nfl_players_preped: list):
 
     pg_hook = PostgresHook(postgres_conn_id="postgres_default")
     conn = pg_hook.get_conn()
@@ -66,22 +77,24 @@ def nfl_player_load(nfl_projections_players: list):
                 player_last_name,
                 player_full_name,
                 nfl_player_id,
+                slug,
                 total_projection,
                 insert_date
         )        
-        VALUES (%s,%s,%s,%s,%s,%s)
+        VALUES (%s,%s,%s,%s,%s,%s,%s)
         ON CONFLICT (nfl_player_id)
         DO UPDATE SET player_first_name = EXCLUDED.player_first_name
             , player_last_name = EXCLUDED.player_last_name
             , player_full_name = EXCLUDED.player_full_name
+            , slug = EXCLUDED.slug
             , total_projection = EXCLUDED.total_projection
             , insert_date = EXCLUDED.insert_date;
         """,
-        tuple(nfl_projections_players),
+        tuple(nfl_players_preped),
         page_size=1000,
     )
 
-    print(f"{len(nfl_projections_players)} nfl players to inserted or updated.")
+    print(f"{len(nfl_players_preped)} nfl players to inserted or updated.")
     conn.commit()
     cursor.close()
     return "dynastr.nfl_player_projections"

@@ -22,7 +22,7 @@ dag_owner = "dynasty_superflex_db"
         "retry_delay": timedelta(minutes=5),
     },
     description="Web Scaper pulling in NFL Player projections to build Superflex Power Rankings",
-    schedule_interval="30 * * * *",
+    schedule_interval="30 */4 * * *",
     start_date=datetime(2022, 8, 7),
     catchup=False,
     tags=["scraper", "database"],

@@ -16,8 +16,7 @@ def dp_web_scrapper():
 
     f = StringIO(data)
     reader = csv.reader(f, delimiter="\n")
-    dp_play
-    ers = []
+    dp_players = []
     enrty_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f%z")
 
     next(reader)
