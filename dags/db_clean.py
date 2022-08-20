@@ -4,6 +4,8 @@ from airflow.operators.python import ShortCircuitOperator
 from airflow.providers.postgres.operators.postgres import PostgresOperator, PostgresHook
 from airflow import DAG
 from airflow.models import Variable
+from airflow.models.baseoperator import chain
+
 from datetime import datetime, timedelta
 
 dag_owner = "dynasty_superflex_db"
@@ -52,6 +54,7 @@ with DAG(
         row_count = db_row_return[0][0]
         return True if row_count > 500_000 else False
 
+    clean_groups = []
     for table in dynasty_sf_config["tables"]:
         with TaskGroup(group_id=f"tabl_{table}_clean") as tbl_cleans:
             row_count_check = ShortCircuitOperator(
@@ -68,4 +71,10 @@ with DAG(
             )
             row_count_check >> clean_dbs
 
-    load_manager_history_table >> load_current_league_history_table >> tbl_cleans
+            clean_groups.append(tbl_cleans)
+
+    chain(
+        load_manager_history_table
+        >> load_current_league_history_table
+        >> [task for task in clean_groups]
+    )
