@@ -1,4 +1,5 @@
 from airflow.operators.python_operator import PythonOperator
+from airflow.utils.task_group import TaskGroup
 from airflow.operators.python import ShortCircuitOperator
 from airflow.providers.postgres.operators.postgres import PostgresOperator, PostgresHook
 from airflow import DAG
@@ -26,6 +27,18 @@ with DAG(
     tags=["database"],
 ) as dag:
 
+    load_manager_history_table = PostgresOperator(
+        task_id="load_manager_history_table",
+        postgres_conn_id="postgres_default",
+        sql="sql/manager_history.sql",
+    )
+
+    load_current_league_history_table = PostgresOperator(
+        task_id=f"load_current_league_history_table",
+        postgres_conn_id="postgres_default",
+        sql="sql/current_league_history.sql",
+    )
+
     def row_check(table_name):
         print(table_name)
         pg_hook = PostgresHook(postgres_conn_id="postgres_default")
@@ -40,17 +53,19 @@ with DAG(
         return True if row_count > 500_000 else False
 
     for table in dynasty_sf_config["tables"]:
+        with TaskGroup(group_id=f"tabl_{table}_clean") as tbl_cleans:
+            row_count_check = ShortCircuitOperator(
+                task_id=f"row_count_check_{table}",
+                provide_context=True,
+                python_callable=row_check,
+                op_args=[table],
+            )
 
-        row_count_check = ShortCircuitOperator(
-            task_id=f"row_count_check_{table}",
-            provide_context=True,
-            python_callable=row_check,
-            op_args=[table],
-        )
+            clean_dbs = PostgresOperator(
+                task_id=f"current_{table}_clean_task",
+                postgres_conn_id="postgres_default",
+                sql=f"DELETE FROM dynastr.{table};",
+            )
+            row_count_check >> clean_dbs
 
-        clean_dbs = PostgresOperator(
-            task_id=f"current_{table}_clean_task",
-            postgres_conn_id="postgres_default",
-            sql=f"DELETE FROM dynastr.{table};",
-        )
-        row_count_check >> clean_dbs
+    load_manager_history_table >> load_current_league_history_table >> tbl_cleans
