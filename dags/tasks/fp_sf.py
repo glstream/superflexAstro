@@ -52,7 +52,7 @@ def sf_fp_player_load(sf_fp_players_json):
         sf_fp_players.append(
             [
                 sf_fp_player["player_name"].split(" ")[0],
-                sf_fp_player["player_name"].replace(' III', "").split(" ")[-1],
+                sf_fp_player["player_name"].replace(' III', "").replace(' II', "").replace('II', "").split(" ")[-1],
                 sf_fp_player["player_name"],
                 sf_fp_player["player_id"],
                 sf_fp_player["player_team_id"],
@@ -127,6 +127,9 @@ def sf_fp_player_load(sf_fp_players_json):
                     VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     ON CONFLICT (fp_player_id)
                     DO UPDATE SET sf_rank_ecr = EXCLUDED.sf_rank_ecr
+                    , player_first_name = EXCLUDED.player_first_name
+                    , player_last_name = EXCLUDED.player_last_name
+                    , player_full_name = EXCLUDED.player_full_name
                     , sf_rank_min = EXCLUDED.sf_rank_min
                     , sf_rank_max = EXCLUDED.sf_rank_max
                     , sf_rank_ave = EXCLUDED.sf_rank_ave

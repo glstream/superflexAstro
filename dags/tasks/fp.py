@@ -25,6 +25,7 @@ def fp_proj_web_scraper():
                 .replace('"', "")
                 .replace(" III", "")
                 .replace(" II", "")
+                .replace("Gabriel", "Gabe")
                 .replace(" Jr.", ""),
                 pos.upper(),
                 proj_score[i].text,
