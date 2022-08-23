@@ -34,7 +34,7 @@ def get_user_meta():
 def add_geo_meta(user_meta_list: list):
     raw_geos = [
         [row[0], row[1], row[2], row[3], row[4], row[5], handler.getDetails(row[1]).all]
-        for row in user_meta_list
+        for row in user_meta_list if row[1] != 'None'
     ]
     return raw_geos
 
@@ -76,10 +76,10 @@ def history_meta_load(preped_geos: list):
     execute_batch(
         cursor,
         """
-            INSERT INTO history.user_meta (
+            INSERT INTO history.user_geo_meta (
                 session_id,
                 ip_address,
-                address,
+                region,
                 city,
                 country,
                 hostname,
@@ -95,7 +95,7 @@ def history_meta_load(preped_geos: list):
         VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
         ON CONFLICT (session_id)
         DO UPDATE SET ip_address = EXCLUDED.ip_address
-            , address = EXCLUDED.address
+            , region = EXCLUDED.region
             , city = EXCLUDED.city
             , country = EXCLUDED.country
             , hostname = EXCLUDED.hostname
@@ -111,4 +111,6 @@ def history_meta_load(preped_geos: list):
         tuple(preped_geos),
         page_size=1000,
     )
+    conn.commit()
+    cursor.close()
     return
