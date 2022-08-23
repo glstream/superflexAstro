@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from airflow.decorators import dags
+from airflow.decorators import dag
 from tasks.meta import get_user_meta, add_geo_meta, geo_transforms, history_meta_load
 
 dag_owner = "dynasty_superflex_db"

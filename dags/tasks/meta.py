@@ -37,25 +37,27 @@ def add_geo_meta(user_meta_list: list):
 
 @task
 def geo_transforms(raw_geos: list):
+
     preped_geos = [
         [
             i[0],
             i[1],
-            i[6]["address"],
-            i[6]["city"],
-            i[6]["country"],
-            i[6]["hostname"],
-            i[6]["lat"],
-            i[6]["lng"],
-            i[6]["org"],
-            i[6]["postal"],
+            i[6].get("address", None),
+            i[6].get("city", None),
+            i[6].get("country", None),
+            i[6].get("hostname", None),
+            i[6].get("lat", None),
+            i[6].get("lng", None),
+            i[6].get("org", None),
+            i[6].get("postal", None),
             i[2],
             i[3],
             i[4],
             i[5],
         ]
-        for i in raw_geos
+        for i in raw_geos if i is not None
     ]
+    return preped_geos
 
 
 @task

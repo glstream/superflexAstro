@@ -52,7 +52,7 @@ with DAG(
         cursor.close()
         conn.close()
         row_count = db_row_return[0][0]
-        return True if row_count > 500_000 else False
+        return True if row_count > 10_000 else False
 
     clean_groups = []
     for table in dynasty_sf_config["tables"]:
