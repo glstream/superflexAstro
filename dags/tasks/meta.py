@@ -1,8 +1,12 @@
 from datetime import datetime, timedelta
-import geocoder
+import ipinfo
 from airflow.decorators import task
 from airflow.providers.postgres.operators.postgres import PostgresOperator, PostgresHook
 from psycopg2.extras import execute_batch
+
+
+access_token = "1a2eea60c8171e"
+handler = ipinfo.getHandler(access_token)
 
 
 @task
@@ -29,7 +33,7 @@ def get_user_meta():
 @task
 def add_geo_meta(user_meta_list: list):
     raw_geos = [
-        [row[0], row[1], row[2], row[3], row[4], row[5], geocoder.ip(row[1]).json]
+        [row[0], row[1], row[2], row[3], row[4], row[5], handler.getDetails(row[1]).all]
         for row in user_meta_list
     ]
     return raw_geos
@@ -42,7 +46,7 @@ def geo_transforms(raw_geos: list):
         [
             i[0],
             i[1],
-            i[6].get("address", None),
+            i[6].get("region", None),
             i[6].get("city", None),
             i[6].get("country", None),
             i[6].get("hostname", None),
@@ -55,7 +59,8 @@ def geo_transforms(raw_geos: list):
             i[4],
             i[5],
         ]
-        for i in raw_geos if i is not None
+        for i in raw_geos
+        if i is not None
     ]
     return preped_geos
 
