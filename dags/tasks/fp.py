@@ -10,10 +10,11 @@ from datetime import datetime
 @task()
 def fp_proj_web_scraper():
     enrty_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f%z")
+    nfl_week = requests.get("https://api.sleeper.app/v1/state/nfl").json()["leg"]
     positions = ["qb", "rb", "wr", "te"]
     all_players = []
     for pos in positions:
-        position_url = f"https://www.fantasypros.com/nfl/projections/{pos}.php"
+        position_url = f"https://www.fantasypros.com/nfl/projections/{pos}.php?week={nfl_week}&scoring=PPR"
         proj = requests.get(position_url)
         soup = BeautifulSoup(proj.text, "html.parser")
         proj_score = soup.find_all("td", attrs={"data-sort-value": True})
