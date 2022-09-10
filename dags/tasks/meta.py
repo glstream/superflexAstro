@@ -21,7 +21,7 @@ def get_user_meta():
         """select * 
             from dynastr.user_meta du 
             where to_timestamp(du.insert_date, 'YYYY-MM-DDTHH:MI:SS.FF6') 
-                > (select max(to_timestamp(hu.insert_date, 'YYYY-MM-DDTHH:MI:SS.FF6')) 
+                > (select min(to_timestamp(hu.insert_date, 'YYYY-MM-DDTHH:MI:SS.FF6')) 
                         from history.user_geo_meta hu)"""
     )
 
