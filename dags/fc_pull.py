@@ -8,6 +8,7 @@ from tasks.fc import (
     one_qb_api_calls,
     one_qb_data_validation,
     one_qb_fc_player_load,
+    surrogate_key_formatting
 )
 
 dag_owner = "grayson.stream"
@@ -24,7 +25,7 @@ dag_owner = "grayson.stream"
     },
      description="API Calls and player load for fantasy Calc",
      schedule_interval="30 * * * *",
-     start_date=datetime(2022,10,06),
+     start_date=datetime(2022,10,5),
      catchup=False,
      tags=["api_call", "database"],
      )
