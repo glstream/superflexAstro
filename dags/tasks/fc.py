@@ -159,7 +159,12 @@ def one_qb_api_calls():
 
 
 @task()
-def sf_fc_player_load(fc_one_qb_players: list):
+def one_qb_data_validation(fc_one_qb_players: list):
+    return fc_one_qb_players if len(fc_one_qb_players) > 0 else False
+
+
+@task()
+def one_qb_fc_player_load(fc_one_qb_players: list):
 
     pg_hook = PostgresHook(postgres_conn_id="postgres_default")
     conn = pg_hook.get_conn()
