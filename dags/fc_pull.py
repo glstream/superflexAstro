@@ -33,11 +33,11 @@ dag_owner = "grayson.stream"
 def fc_players_pull():
 
     sf_player_data = sf_api_calls()
-    sf_player_validation = sf_data_validation(sf_player_data)
-    sf_fc_player_load(sf_player_validation)
-    one_qb_player_data = one_qb_api_calls()
-    one_qb_data_validation = one_qb_data_validation(one_qb_player_data)
-    one_qb_fc_player_load = one_qb_fc_player_load(one_qb_data_validation)
-    surrogate_key_formatting(one_qb_fc_player_load)
+    sf_validation = sf_data_validation(sf_player_data)
+    sf_players = sf_fc_player_load(sf_validation) 
+    one_qb_player_data = one_qb_api_calls(sf_players) 
+    one_qb_validation = one_qb_data_validation(one_qb_player_data)
+    one_qb_player_load = one_qb_fc_player_load(one_qb_validation) 
+    surrogate_key_formatting(one_qb_player_load)
     
 fc_players_pull = fc_players_pull()

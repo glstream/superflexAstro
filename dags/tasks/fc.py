@@ -15,8 +15,8 @@ def sf_api_calls():
         "redraft": "https://api.fantasycalc.com/values/current?isDynasty=false&numQbs=2",
     }
 
-    for k, v in fc_sf_api_calls.items():
-        fc_sf_req = requests.get(v)
+    for rank_type, api_call in fc_sf_api_calls.items():
+        fc_sf_req = requests.get(api_call)
         for i in fc_sf_req.json():
             p = (
                 i["player"]["name"]
@@ -36,7 +36,7 @@ def sf_api_calls():
                 i["player"]["mflId"],
                 i["player"]["sleeperId"],
                 i["player"]["position"],
-                k,
+                rank_type,
                 None,
                 None,
                 None,
@@ -89,15 +89,10 @@ def sf_fc_player_load(fc_sf_players: list):
                 insert_date
         )        
         VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s, %s, %s, %s, %s)
-        ON CONFLICT (player_full_name)
+        ON CONFLICT (player_full_name, rank_type)
         DO UPDATE SET player_first_name = EXCLUDED.player_first_name
             , player_last_name = EXCLUDED.player_last_name
             , player_position = EXCLUDED.player_position
-            , one_qb_overall_rank = EXCLUDED.one_qb_overall_rank
-            , sf_rank_ecr = EXCLUDED.sf_rank_ecr
-            , one_qb_position_rank = EXCLUDED.one_qb_position_rank
-            , one_qb_value = EXCLUDED.one_qb_value
-            , one_qb_trend_30_day = EXCLUDED.one_qb_trend_30_day
             , sf_overall_rank = EXCLUDED.sf_overall_rank
             , sf_position_rank = EXCLUDED.sf_position_rank
             , sf_value = EXCLUDED.sf_value
@@ -111,11 +106,11 @@ def sf_fc_player_load(fc_sf_players: list):
     print(f"{len(fc_sf_players)} ktc players to inserted or updated.")
     conn.commit()
     cursor.close()
-    return
+    return 'done'
 
 
 @task()
-def one_qb_api_calls():
+def one_qb_api_calls(sf_player_dependency:str):
     fc_one_qb_players = []
     fc_one_qb_api_calls = {
         "dynasty": "https://api.fantasycalc.com/values/current?isDynasty=true&numQbs=1",
@@ -195,19 +190,14 @@ def one_qb_fc_player_load(fc_one_qb_players: list):
                 insert_date
         )        
         VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s, %s, %s, %s, %s)
-        ON CONFLICT (player_full_name)
+        ON CONFLICT (player_full_name, rank_type)
         DO UPDATE SET player_first_name = EXCLUDED.player_first_name
             , player_last_name = EXCLUDED.player_last_name
             , player_position = EXCLUDED.player_position
             , one_qb_overall_rank = EXCLUDED.one_qb_overall_rank
-            , sf_rank_ecr = EXCLUDED.sf_rank_ecr
             , one_qb_position_rank = EXCLUDED.one_qb_position_rank
             , one_qb_value = EXCLUDED.one_qb_value
             , one_qb_trend_30_day = EXCLUDED.one_qb_trend_30_day
-            , sf_overall_rank = EXCLUDED.sf_overall_rank
-            , sf_position_rank = EXCLUDED.sf_position_rank
-            , sf_value = EXCLUDED.sf_value
-            , sf_trend_30_day = EXCLUDED.sf_trend_30_day
             , insert_date = EXCLUDED.insert_date;
         """,
         tuple(fc_one_qb_players),
