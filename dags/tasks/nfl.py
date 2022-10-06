@@ -31,6 +31,7 @@ def nfl_web_scrapper() -> list:
                 .replace('"', "")
                 .replace(" III", "")
                 .replace(" II", "")
+                .replace("Gabe", "Gabriel")
                 .replace(" Jr.", ""),
                 re.split("=", names[i].find("a")["href"])[-1],
                 names[i].find("a")["href"],
