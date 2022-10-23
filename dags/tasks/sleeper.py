@@ -22,11 +22,11 @@ def players_transform(players):
     all_players_df = all_players_df.drop(columns=["index"])
 
 
-    trimmed_players_df = all_players_df[["player_id", "full_name", "position", "team"]]
+    trimmed_players_df = all_players_df[["player_id", "full_name", "position", "age","team"]]
     ap_list = trimmed_players_df.values.tolist()
     # ap_list = [i.extend([i[1]]) for i in ap_list]
     ap_list_filtered = [i for i in ap_list if i[2] in ['QB', 'RB', 'WR', 'TE']]
-    ap_list = [[i[0],i[1].split(" ")[0], i[1].split(" ")[-1], i[1], i[2], i[3]] for i in ap_list_filtered]
+    ap_list = [[i[0],i[1].split(" ")[0], i[1].split(" ")[-1], i[1], i[2], i[3], i[4]] for i in ap_list_filtered]
     print(ap_list[0])
 
     pg_hook = PostgresHook(postgres_conn_id='postgres_default')
@@ -37,8 +37,8 @@ def players_transform(players):
     conn.commit()
 
     cursor = conn.cursor()
-    execute_batch(cursor, """INSERT into dynastr.players (player_id, first_name, last_name, full_name, player_position, team)
-    VALUES (%s, %s, %s, %s, %s, %s)""", tuple(ap_list), page_size=1000)
+    execute_batch(cursor, """INSERT into dynastr.players (player_id, first_name, last_name, full_name, player_position, age, team)
+    VALUES (%s, %s, %s, %s, %s, %s, %s)""", tuple(ap_list), page_size=1000)
     conn.commit()
     cursor.close()
     conn.close()
