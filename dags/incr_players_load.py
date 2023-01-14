@@ -5,7 +5,7 @@ from tasks.sleeper import players_pull, players_transform, players_surrogate_key
 from airflow.models import Variable
 
 dag_owner = 'dynasty_superflex_db'
-dynasty_sf_config = Variable.get(dag_owner, deserialize_json=True)
+# dynasty_sf_config = Variable.get(dag_owner, deserialize_json=True)
 
 @dag(
     default_args={

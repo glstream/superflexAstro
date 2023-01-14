@@ -37,7 +37,7 @@ with DAG(
         soup = BeautifulSoup(res.text, "html.parser")
 
         scripts = soup.find_all("script")
-        script_var_array = scripts[7]
+        script_var_array = scripts[6]
 
         # returning the string of the script tag for parsing
         players_script = script_var_array.contents[0]

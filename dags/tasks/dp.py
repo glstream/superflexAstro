@@ -58,7 +58,7 @@ def data_validation(dp_players_preped: list):
 @task()
 def dp_player_load(dp_players_preped: list):
 
-    pg_hook = PostgresHook(postgres_conn_id="postgres_default")
+    pg_hook = PostgresHook(postgres_conn_id="postgres_docker")
     conn = pg_hook.get_conn()
 
     cursor = conn.cursor()
@@ -107,7 +107,7 @@ def dp_player_load(dp_players_preped: list):
 
 @task()
 def surrogate_key_formatting(table_name: str):
-    pg_hook = PostgresHook(postgres_conn_id="postgres_default")
+    pg_hook = PostgresHook(postgres_conn_id="postgres_docker")
     conn = pg_hook.get_conn()
     cursor = conn.cursor()
     print("Connection established")

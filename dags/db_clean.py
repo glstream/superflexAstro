@@ -9,7 +9,9 @@ from airflow.models.baseoperator import chain
 from datetime import datetime, timedelta
 
 dag_owner = "dynasty_superflex_db"
-dynasty_sf_config = Variable.get(dag_owner, deserialize_json=True)
+# dynasty_sf_config = Variable.get(dag_owner, deserialize_json=True)
+
+dynasty_tables = ['current_leagues', 'dp_player_ranks', 'darft_pick_trades', 'draft_positions', 'darft_picks', 'league_players', 'leagues', 'managers', 'user_meta']
 
 with DAG(
     "db_clean",
@@ -55,7 +57,7 @@ with DAG(
         return True if row_count > 5_000 else False
 
     clean_groups = []
-    for table in dynasty_sf_config["tables"]:
+    for table in dynasty_tables:
         with TaskGroup(group_id=f"tabl_{table}_clean") as tbl_cleans:
             row_count_check = ShortCircuitOperator(
                 task_id=f"row_count_check_{table}",

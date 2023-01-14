@@ -8,7 +8,7 @@ from airflow import DAG
 from airflow.models import Variable
 
 dag_owner = 'dynasty_superflex_db'
-dynasty_sf_config = Variable.get(dag_owner, deserialize_json=True)
+# dynasty_sf_config = Variable.get(dag_owner, deserialize_json=True)
 
 with DAG(
     "future_state_dag",
@@ -46,7 +46,7 @@ with DAG(
         return table_name
 
 
-    sport_tables = sorted(dynasty_sf_config['sports'])
+    sport_tables = sorted(['nfl'])
 
     for k,sport in enumerate(sport_tables):
         tg_id = f'oltp_{sport}'

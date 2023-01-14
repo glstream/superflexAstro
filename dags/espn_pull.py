@@ -78,7 +78,7 @@ with DAG(
 
         headers = {"x-fantasy-filter": json.dumps(filters)}
 
-        season = str(datetime.now().year)
+        season = '2022'
         url = f"https://fantasy.espn.com/apis/v3/games/ffl/seasons/{season}/segments/0/leaguedefaults/3?scoringPeriodId=0&view=kona_player_info"
         req = requests.get(url, headers=headers)
         res = req.json()
