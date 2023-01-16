@@ -1,7 +1,8 @@
 from airflow.operators.python_operator import PythonOperator
 from airflow.utils.task_group import TaskGroup
 from airflow.operators.python import ShortCircuitOperator
-from airflow.providers.postgres.operators.postgres import PostgresOperator, PostgresHook
+from airflow.providers.postgres.operators.postgres import PostgresOperator
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow import DAG
 from airflow.models import Variable
 from airflow.models.baseoperator import chain

@@ -3,7 +3,7 @@ import json, requests, re
 from psycopg2.extras import execute_batch
 from bs4 import BeautifulSoup
 from datetime import datetime
-from airflow.providers.postgres.operators.postgres import PostgresHook
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 
 
 @task

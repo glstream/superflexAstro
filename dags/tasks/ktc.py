@@ -3,7 +3,7 @@ import json, requests, re
 from psycopg2.extras import execute_batch
 from bs4 import BeautifulSoup
 from datetime import datetime
-from airflow.providers.postgres.operators.postgres import PostgresHook
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 
 
 @task()
@@ -201,7 +201,7 @@ def ktc_player_load(ktc_players_json):
 
 @task()
 def surrogate_key_formatting(table_name: str):
-    pg_hook = PostgresHook(postgres_conn_id="postgres_default")
+    pg_hook = PostgresHook(postgres_conn_id="postgres_akv")
     conn = pg_hook.get_conn()
     cursor = conn.cursor()
     print("Connection established")

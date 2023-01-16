@@ -1,6 +1,6 @@
 import requests
 from airflow.decorators import task
-from airflow.providers.postgres.operators.postgres import PostgresHook
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 from psycopg2.extras import execute_batch
 from datetime import datetime
 

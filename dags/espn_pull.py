@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
 import requests, json, os
 from airflow.operators.python_operator import PythonOperator
-from airflow.providers.postgres.operators.postgres import PostgresOperator, PostgresHook
+from airflow.providers.postgres.hooks.postgres import PostgresHook
+from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow import DAG
 from psycopg2.extras import execute_batch
 from datetime import datetime

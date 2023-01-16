@@ -2,8 +2,7 @@ from airflow.decorators import task
 import requests
 from psycopg2.extras import execute_batch
 import pandas as pd
-from airflow.providers.postgres.operators.postgres import PostgresHook
-
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 
 @task
 def players_pull():
