@@ -28,7 +28,7 @@ def players_transform(players):
     ap_list = [[i[0],i[1].split(" ")[0], i[1].split(" ")[-1], i[1], i[2], i[3], i[4]] for i in ap_list_filtered]
     print(ap_list[0])
 
-    pg_hook = PostgresHook(postgres_conn_id='postgres_default')
+    pg_hook = PostgresHook(postgres_conn_id='postgres_akv')
     conn = pg_hook.get_conn()
 
     cursor = conn.cursor()
@@ -45,7 +45,7 @@ def players_transform(players):
 
 @task
 def players_surrogate_key_clean(table_name:str):
-    pg_hook = PostgresHook(postgres_conn_id='postgres_default')
+    pg_hook = PostgresHook(postgres_conn_id='postgres_akv')
     conn = pg_hook.get_conn()
 
     cursor = conn.cursor()

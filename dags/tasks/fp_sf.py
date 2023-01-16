@@ -39,7 +39,7 @@ def sf_data_validation(sf_fp_players_json: dict):
 
 @task
 def sf_fp_player_load(sf_fp_players_json):
-    pg_hook = PostgresHook(postgres_conn_id="postgres_default")
+    pg_hook = PostgresHook(postgres_conn_id="postgres_akv")
     conn = pg_hook.get_conn()
 
     cursor = conn.cursor()
@@ -149,7 +149,7 @@ def sf_fp_player_load(sf_fp_players_json):
 
 @task()
 def sf_surrogate_key_formatting(table_name: str):
-    pg_hook = PostgresHook(postgres_conn_id="postgres_default")
+    pg_hook = PostgresHook(postgres_conn_id="postgres_akv")
     conn = pg_hook.get_conn()
 
     cursor = conn.cursor()

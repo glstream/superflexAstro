@@ -60,7 +60,7 @@ def sf_data_validation(fc_sf_players: list):
 @task()
 def sf_fc_player_load(fc_sf_players: list):
 
-    pg_hook = PostgresHook(postgres_conn_id="postgres_default")
+    pg_hook = PostgresHook(postgres_conn_id="postgres_akv")
     conn = pg_hook.get_conn()
 
     cursor = conn.cursor()
@@ -161,7 +161,7 @@ def one_qb_data_validation(fc_one_qb_players: list):
 @task()
 def one_qb_fc_player_load(fc_one_qb_players: list):
 
-    pg_hook = PostgresHook(postgres_conn_id="postgres_default")
+    pg_hook = PostgresHook(postgres_conn_id="postgres_akv")
     conn = pg_hook.get_conn()
 
     cursor = conn.cursor()
@@ -212,7 +212,7 @@ def one_qb_fc_player_load(fc_one_qb_players: list):
 
 @task()
 def surrogate_key_formatting(table_name: str):
-    pg_hook = PostgresHook(postgres_conn_id="postgres_default")
+    pg_hook = PostgresHook(postgres_conn_id="postgres_akv")
     conn = pg_hook.get_conn()
     cursor = conn.cursor()
     print("Connection established")

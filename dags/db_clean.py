@@ -34,19 +34,19 @@ with DAG(
 
     load_manager_history_table = PostgresOperator(
         task_id="load_manager_history_table",
-        postgres_conn_id="postgres_default",
+        postgres_conn_id="postgres_akv",
         sql="sql/manager_history.sql",
     )
 
     load_current_league_history_table = PostgresOperator(
         task_id=f"load_current_league_history_table",
-        postgres_conn_id="postgres_default",
+        postgres_conn_id="postgres_akv",
         sql="sql/current_league_history.sql",
     )
 
     def row_check(table_name):
         print(table_name)
-        pg_hook = PostgresHook(postgres_conn_id="postgres_default")
+        pg_hook = PostgresHook(postgres_conn_id="postgres_akv")
         conn = pg_hook.get_conn()
         cursor = conn.cursor()
         cursor.execute(f"""select count(*) from dynastr.{table_name};""")
@@ -69,7 +69,7 @@ with DAG(
 
             clean_dbs = PostgresOperator(
                 task_id=f"current_{table}_clean_task",
-                postgres_conn_id="postgres_default",
+                postgres_conn_id="postgres_akv",
                 sql=f"DELETE FROM dynastr.{table};",
             )
             row_count_check >> clean_dbs

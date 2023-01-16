@@ -105,7 +105,7 @@ with DAG(
 
     def projections_load():
 
-        pg_hook = PostgresHook(postgres_conn_id="postgres_default")
+        pg_hook = PostgresHook(postgres_conn_id="postgres_akv")
         conn = pg_hook.get_conn()
 
         cursor = conn.cursor()
@@ -223,7 +223,7 @@ with DAG(
 
     surrogate_key_formatting = PostgresOperator(
         task_id="surrogate_key_formatting",
-        postgres_conn_id="postgres_default",
+        postgres_conn_id="postgres_akv",
         sql="sql/espn_key_formatting.sql",
     )
 

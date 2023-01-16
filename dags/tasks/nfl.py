@@ -64,7 +64,7 @@ def data_validation(nfl_players_preped: list):
 @task()
 def nfl_player_load(nfl_players_preped: list):
 
-    pg_hook = PostgresHook(postgres_conn_id="postgres_default")
+    pg_hook = PostgresHook(postgres_conn_id="postgres_akv")
     conn = pg_hook.get_conn()
 
     cursor = conn.cursor()
@@ -103,7 +103,7 @@ def nfl_player_load(nfl_players_preped: list):
 
 @task()
 def surrogate_key_formatting(table_name: str):
-    pg_hook = PostgresHook(postgres_conn_id="postgres_default")
+    pg_hook = PostgresHook(postgres_conn_id="postgres_akv")
     conn = pg_hook.get_conn()
     cursor = conn.cursor()
     print("Connection established")

@@ -42,7 +42,7 @@ def data_validation(ktc_players_json: dict):
 @task()
 def ktc_player_load(ktc_players_json):
 
-    pg_hook = PostgresHook(postgres_conn_id="postgres_default")
+    pg_hook = PostgresHook(postgres_conn_id="postgres_akv")
     conn = pg_hook.get_conn()
 
     cursor = conn.cursor()

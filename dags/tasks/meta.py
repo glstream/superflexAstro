@@ -11,7 +11,7 @@ handler = ipinfo.getHandler(access_token)
 
 @task
 def get_user_meta():
-    pg_hook = PostgresHook(postgres_conn_id="postgres_default")
+    pg_hook = PostgresHook(postgres_conn_id="postgres_akv")
     conn = pg_hook.get_conn()
 
     cursor = conn.cursor()
@@ -67,7 +67,7 @@ def geo_transforms(raw_geos: list):
 
 @task
 def history_meta_load(preped_geos: list):
-    pg_hook = PostgresHook(postgres_conn_id="postgres_default")
+    pg_hook = PostgresHook(postgres_conn_id="postgres_akv")
     conn = pg_hook.get_conn()
 
     cursor = conn.cursor()
