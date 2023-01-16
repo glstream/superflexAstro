@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from airflow.decorators import dag # DAG and task decorators for interfacing with the TaskFlow API
 from datetime import datetime
-from tasks.sleeper import players_pull, players_transform, players_surrogate_key_clean
+from tasks.sleeper import players_pull, players_transform, players_surrogate_key_clean, edge_case_names
 from airflow.models import Variable
 
 dag_owner = 'dynasty_superflex_db'
@@ -27,5 +27,6 @@ def incr_players_load():
     sleeper_players = players_pull()
     sleeper_transform = players_transform(sleeper_players)
     players_surrogate_key_clean(sleeper_transform)
+    edge_case_names(sleeper_transform)
 
 incr_players_load = incr_players_load()

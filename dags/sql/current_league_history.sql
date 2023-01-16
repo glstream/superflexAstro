@@ -18,4 +18,8 @@ ON CONFLICT (session_id, league_id) DO UPDATE
 		sport = excluded.sport,
 		rf_cnt = excluded.rf_cnt,
 		league_cat = excluded.league_cat,
-      	insert_date = excluded.insert_date;
+      	insert_date = excluded.insert_date,
+		rf_cnt = excluded.rf_cnt,
+		league_cat = excluded.league_cat,
+		league_year = excluded.league_year,
+		previous_league_id = excluded.previous_league_id;

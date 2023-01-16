@@ -58,5 +58,19 @@ def players_surrogate_key_clean(table_name:str):
     conn.close()   
     return
 
+@task
+def edge_case_names(table_name:str):
+    pg_hook = PostgresHook(postgres_conn_id='postgres_akv')
+    conn = pg_hook.get_conn()
+
+    cursor = conn.cursor()
+    print("Connection established")
+    cursor.execute(f"""UPDATE dynastr.players SET first_name = 'Gabriel' WHERE player_id = '6943'""")
+    conn.commit() 
+    cursor.close()
+    conn.close()   
+    return
+
+
 
     
