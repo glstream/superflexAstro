@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 dag_owner = "dynasty_superflex_db"
 # dynasty_sf_config = Variable.get(dag_owner, deserialize_json=True)
 
-dynasty_tables = ['current_leagues', 'dp_player_ranks', 'darft_pick_trades', 'draft_positions', 'darft_picks', 'league_players', 'leagues', 'managers', 'user_meta']
+dynasty_tables = ['current_leagues', 'dp_player_ranks', 'draft_pick_trades', 'draft_positions', 'draft_picks', 'league_players', 'leagues', 'managers', 'user_meta']
 
 with DAG(
     "db_clean",
@@ -26,7 +26,7 @@ with DAG(
         "retry_delay": timedelta(minutes=5),
     },
     description="Cleaning user tables to maintain page load times",
-    schedule_interval="@daily",
+    schedule_interval="@weekly",
     start_date=datetime(2022, 6, 9),
     catchup=False,
     tags=["database"],
@@ -55,7 +55,7 @@ with DAG(
         cursor.close()
         conn.close()
         row_count = db_row_return[0][0]
-        return True if row_count > 5_000 else False
+        return True if row_count > 500_000 else False
 
     clean_groups = []
     for table in dynasty_tables:

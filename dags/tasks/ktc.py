@@ -56,7 +56,7 @@ def ktc_player_load(ktc_players_json):
         ktc_players.append(
             [
                 ktc_player["playerName"].split(" ")[0],
-                ktc_player["playerName"].replace(' III', "").split(" ")[-1],
+                ktc_player["playerName"].replace(' III', "").replace(' Jr.', "").split(" ")[-1],
                 ktc_player["playerName"],
                 ktc_player["playerID"],
                 ktc_player["slug"],
@@ -187,6 +187,7 @@ def ktc_player_load(ktc_players_json):
             , positional_rank = EXCLUDED.positional_rank
             , one_qb_value = EXCLUDED.one_qb_value
             , sf_value = EXCLUDED.sf_value
+            , rookie = EXCLUDED.rookie
             , insert_date = EXCLUDED.insert_date;
         """,
         tuple(ktc_players),

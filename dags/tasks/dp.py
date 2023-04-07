@@ -26,6 +26,8 @@ def dp_web_scrapper():
         player_record = [
             i.replace("'", "").replace('"', "").replace(' III', "").replace(' II', "").replace(' Jr.', "").split(",") for i in prepred_row
         ]
+        if '.' in player_record[0][0] and '20' in player_record[0][0]:
+            player_record[0][0] = f"{player_record[0][0].split(' ')[0]} Round {player_record[0][0].split(' ')[-1][0]} Pick {int(player_record[0][0].split(' ')[-1].split('.')[-1])}"
         dp_players.extend(player_record)
 
     dp_players_preped = [
