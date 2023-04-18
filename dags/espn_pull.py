@@ -28,9 +28,10 @@ with DAG(
 ) as dag:
 
     def espn_projections_pull() -> None:
+        season = '2023'
         filters = {
             "players": {
-                "filterStatsForExternalIds": {"value": [2021, 2022]},
+                "filterStatsForExternalIds": {"value": [int(season)-1, int(season)]},
                 "filterSlotIds": {
                     "value": [
                         0,
@@ -58,10 +59,11 @@ with DAG(
                     ]
                 },
                 "filterStatsForSourceIds": {"value": [0, 1]},
+                "useFullProjectionTable":{"value":True},
                 "sortAppliedStatTotal": {
                     "sortAsc": False,
                     "sortPriority": 3,
-                    "value": "102022",
+                    "value": f"10{season}",
                 },
                 "sortDraftRanks": {"sortPriority": 2, "sortAsc": True, "value": "PPR"},
                 "sortPercOwned": {"sortPriority": 4, "sortAsc": False},
@@ -72,14 +74,13 @@ with DAG(
                 "filterRanksForSlotIds": {"value": [0, 2, 4, 6, 17, 16]},
                 "filterStatsForTopScoringPeriodIds": {
                     "value": 2,
-                    "additionalValue": ["002022", "102022", "002021", "022022"],
+                    "additionalValue": [f"00{season}", f"10{season}", f"00{season}", f"02{season}"],
                 },
             }
         }
 
         headers = {"x-fantasy-filter": json.dumps(filters)}
 
-        season = '2022'
         url = f"https://fantasy.espn.com/apis/v3/games/ffl/seasons/{season}/segments/0/leaguedefaults/3?scoringPeriodId=0&view=kona_player_info"
         req = requests.get(url, headers=headers)
         res = req.json()
