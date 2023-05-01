@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
-import requests, json, os
+import requests
+import json
+import os
 from airflow.operators.python_operator import PythonOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.providers.postgres.operators.postgres import PostgresOperator
@@ -59,7 +61,7 @@ with DAG(
                     ]
                 },
                 "filterStatsForSourceIds": {"value": [0, 1]},
-                "useFullProjectionTable":{"value":True},
+                "useFullProjectionTable": {"value": True},
                 "sortAppliedStatTotal": {
                     "sortAsc": False,
                     "sortPriority": 3,
@@ -84,6 +86,8 @@ with DAG(
         url = f"https://fantasy.espn.com/apis/v3/games/ffl/seasons/{season}/segments/0/leaguedefaults/3?scoringPeriodId=0&view=kona_player_info"
         req = requests.get(url, headers=headers)
         res = req.json()
+        print('STATUS_CODE', req.status_code)
+        print('PLAYERS 1', res["players"][0])
 
         top_dir = os.getcwd()
         # data
@@ -126,31 +130,48 @@ with DAG(
 
         espn_players = []
         for player in players:
-            espn_players.append(
-                [
-                    player["player"]["fullName"].split(" ")[0],
-                    player["player"]["fullName"].replace("'", "").replace('"', "").replace(' III', "").replace(' II', "").replace(' Jr.', "").split(" ")[-1],
-                    player["player"]["fullName"],
-                    player["id"],
-                    player["player"]["draftRanksByRankType"]["PPR"].get("rank", -1),
-                    player["player"]["draftRanksByRankType"]["PPR"].get(
-                        "auctionValue", -1
-                    ),
-                    round(player["player"]["stats"][-1].get("appliedTotal", 0)),
-                    round(player["player"]["stats"][-1]["stats"].get("53", 0)),
-                    round(player["player"]["stats"][-1]["stats"].get("42", 0)),
-                    round(player["player"]["stats"][-1]["stats"].get("43", 0)),
-                    round(player["player"]["stats"][-1]["stats"].get("23", 0)),
-                    round(player["player"]["stats"][-1]["stats"].get("24", 0)),
-                    round(player["player"]["stats"][-1]["stats"].get("25", 0)),
-                    round(player["player"]["stats"][-1]["stats"].get("0", 0)),
-                    round(player["player"]["stats"][-1]["stats"].get("1", 0)),
-                    round(player["player"]["stats"][-1]["stats"].get("3", 0)),
-                    round(player["player"]["stats"][-1]["stats"].get("4", 0)),
-                    round(player["player"]["stats"][-1]["stats"].get("20", 0)),
-                    enrty_time,
-                ]
-            )
+            try:
+                espn_players.append(
+                    [
+                        player["player"]["fullName"].split(" ")[0],
+                        player["player"]["fullName"].replace("'", "").replace('"', "").replace(
+                            ' III', "").replace(' II', "").replace(' Jr.', "").split(" ")[-1],
+                        player["player"]["fullName"],
+                        player["id"],
+                        player["player"]["draftRanksByRankType"]["PPR"].get(
+                            "rank", -1),
+                        player["player"]["draftRanksByRankType"]["PPR"].get(
+                            "auctionValue", -1
+                        ),
+                        round(player["player"]["stats"]
+                              [-1].get("appliedTotal", 0)),
+                        round(player["player"]["stats"]
+                              [-1]["stats"].get("53", 0)),
+                        round(player["player"]["stats"]
+                              [-1]["stats"].get("42", 0)),
+                        round(player["player"]["stats"]
+                              [-1]["stats"].get("43", 0)),
+                        round(player["player"]["stats"]
+                              [-1]["stats"].get("23", 0)),
+                        round(player["player"]["stats"]
+                              [-1]["stats"].get("24", 0)),
+                        round(player["player"]["stats"]
+                              [-1]["stats"].get("25", 0)),
+                        round(player["player"]["stats"]
+                              [-1]["stats"].get("0", 0)),
+                        round(player["player"]["stats"]
+                              [-1]["stats"].get("1", 0)),
+                        round(player["player"]["stats"]
+                              [-1]["stats"].get("3", 0)),
+                        round(player["player"]["stats"]
+                              [-1]["stats"].get("4", 0)),
+                        round(player["player"]["stats"]
+                              [-1]["stats"].get("20", 0)),
+                        enrty_time,
+                    ]
+                )
+            except:
+                pass
 
         execute_batch(
             cursor,
